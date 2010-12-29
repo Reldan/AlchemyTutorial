@@ -2,6 +2,7 @@ from sqlalchemy import Column, Integer, String, ForeignKey
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import backref, mapper, relation, sessionmaker
+from sqlalchemy.orm import sessionmaker
 
 Base = declarative_base()
 
@@ -60,3 +61,15 @@ users_table = User.__table__
 # get a handle on the metadata
 metadata = Base.metadata
 metadata.create_all(engine)
+
+Session = sessionmaker(bind=engine)
+sess = Session()
+user = User("reldan", "reldan", "huj")
+sess.add(user)
+sess.commit()
+result = sess.query(User).filter_by(name="reldan").all()
+print result
+for res in result:
+    print res.name
+    print res.password
+    print res["fullname"]
